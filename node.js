@@ -13,20 +13,28 @@ function needData(title, poster_path, overview) {
 }
 
 app.get("/", endPointHandler);
+app.get("/favorite", favoritePointHandler);
+
 // app.get("/data", dataHandler);
 
 // function endPointHandler(req, res) {
 //   res.send("data");
 //   //   console.log(data);
 //}
+function favoritePointHandler(req, res) {
+  return res.send("Welcome to Favorite Page");
+}
 
 function endPointHandler(request, response) {
   let result = [];
-  data.forEach((value, index) => {
-    console.log(value);
+  needData.data.forEach((value) => {
+    let newData = new needData(value.title, value.poster_path, value.overview);
+    result.push(needData);
+    // console.log(value);
   });
+
   //   console.log(data);
-  return response.json(data);
+  return response.json(result);
   //   return response.send("Hello World");
 }
 
