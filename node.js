@@ -25,6 +25,8 @@ app.get("/", endPointHandler);
 app.get("/favorite", favoritePointHandler);
 app.get("/trending", trendingData);
 app.get("/search", searchHandler);
+app.get("/collection", collectionHandler);
+app.get("/company", companyHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 
@@ -74,11 +76,61 @@ function trendingData(req, res) {
 }
 
 function searchHandler(req, res) {
-  console.log(req);
+  // console.log(req);
+  let search = req.query.query;
   let result = [];
-  axios.get(
-    `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${search}`
-  );
+  axios
+    .get(
+      `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${search}`
+    )
+    .then((results) => {
+      res.send(results.data.results);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
+}
+
+function collectionHandler(req, res) {
+  let result = [];
+  let trinding = axios
+    .get(
+      `https://api.themoviedb.org/3/collection/{collection_id}?api_key=${APIKEY}&language=en-US`
+    )
+    .then((apiResponse) => {
+      apiResponse.data.results.map((value) => {
+        let newData = new needData(
+          value.title || "N/A",
+          value.poster_path || "N/A",
+          value.overview || "N/A"
+        );
+        result.push(newData);
+      });
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
+}
+
+function companyHandler(req, res) {
+  let result = [];
+  let trinding = axios
+    .get(`https://api.themoviedb.org/3/company/{company_id}?api_key=${APIKEY}`)
+    .then((apiResponse) => {
+      apiResponse.data.results.map((value) => {
+        let newData = new needData(
+          value.title || "N/A",
+          value.poster_path || "N/A",
+          value.overview || "N/A"
+        );
+        result.push(newData);
+      });
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
 }
 
 function errorHandler(error, req, res) {
