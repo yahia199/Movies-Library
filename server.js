@@ -10,10 +10,15 @@ const app = express();
 
 const axios = require("axios");
 
+const pg = require("pg");
+
 dotenv.config();
 
 const APIKEY = process.env.APIKEY;
+const DATABASE_URL = process.env.DATABASE_URL;
 console.log(APIKEY);
+
+const client = new pg.Client(DATABASE_URL);
 
 function needData(title, poster_path, overview) {
   this.title = title;
@@ -21,12 +26,15 @@ function needData(title, poster_path, overview) {
   this.overview = overview;
 }
 
+app.use(express.json());
 app.get("/", endPointHandler);
 app.get("/favorite", favoritePointHandler);
 app.get("/trending", trendingData);
 app.get("/search", searchHandler);
 app.get("/collection", collectionHandler);
 app.get("/company", companyHandler);
+app.post("/addmovie", addMovieHandler);
+app.get("/getMovies", getMoviesHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 
@@ -133,6 +141,23 @@ function companyHandler(req, res) {
     });
 }
 
+function addMovieHandler(req, res) {
+  const movieAdd = req.body;
+  const sql = `INSERT INTO addmovie(title,poster_path,overview)VALUES($1, $2, $3)RETURNING *`;
+  const values = [movieAdd.title, movieAdd.poster_path, movieAdd.overview];
+  client.query(sql, values).then((result) => {
+    res.status(201).json(result.rows);
+  });
+}
+
+function getMoviesHandler(req, res) {
+  const sql = `SELECT * FROM addmovie`;
+
+  client.query(sql).then((result) => {
+    res.status(200).json(result.rows);
+  });
+}
+
 function errorHandler(error, req, res) {
   const err = {
     status: 500,
@@ -145,6 +170,8 @@ function notFoundHandler(req, res) {
   return res.status(500).send("page not found error");
 }
 
-app.listen(4000, () => {
-  console.log("listen to 4000");
+client.connect().then(() => {
+  app.listen(4000, () => {
+    console.log("listen to 4000");
+  });
 });
