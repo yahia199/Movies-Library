@@ -35,6 +35,9 @@ app.get("/collection", collectionHandler);
 app.get("/company", companyHandler);
 app.post("/addmovie", addMovieHandler);
 app.get("/getMovies", getMoviesHandler);
+app.get("/getMovie/:id", movieHandler);
+app.put("/UPDATE/:id", updateHandler);
+app.delete("/DELETE/:id", deleteHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 
@@ -156,6 +159,52 @@ function getMoviesHandler(req, res) {
   client.query(sql).then((result) => {
     res.status(200).json(result.rows);
   });
+}
+
+function movieHandler(req, res) {
+  let id = req.params.id;
+
+  const sql = `SELECT * FROM addmovie WHERE id=$1`;
+  const values = [id];
+  client
+    .query(sql, values)
+    .then((result) => {
+      return res.status(200).json(result.rows);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
+}
+
+function updateHandler(req, res) {
+  const id = req.params.id;
+  const movie = req.body;
+
+  const sql = `UPDATE addmovie SET title=$1,poster_path=$2,overview=$3 WHERE id=$4 RETURNING *`;
+
+  const values = [movie.title, movie.poster_path, movie.overview, id];
+  client
+    .query(sql, values)
+    .then((result) => {
+      return res.status(200).json(result.rows);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
+}
+
+function deleteHandler(req, res) {
+  const id = req.params.id;
+  const sql = `DELETE FROM addmovie WHERE id=$1`;
+  const values = [id];
+  client
+    .query(sql, values)
+    .then((result) => {
+      return res.status(204).json({});
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
 }
 
 function errorHandler(error, req, res) {
