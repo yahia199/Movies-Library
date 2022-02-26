@@ -18,12 +18,12 @@ const APIKEY = process.env.APIKEY;
 const DATABASE_URL = process.env.DATABASE_URL;
 console.log(APIKEY);
 
-const client = new pg.Client(DATABASE_URL);
+// const client = new pg.Client(DATABASE_URL);
 
-// const client = new pg.Client({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: { rejectUnauthorized: false },
-// });
+const client = new pg.Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 function needData(title, poster_path, overview) {
   this.title = title;
