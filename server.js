@@ -17,6 +17,7 @@ dotenv.config();
 const APIKEY = process.env.APIKEY;
 const DATABASE_URL = process.env.DATABASE_URL;
 console.log(APIKEY);
+const PORT = process.env.PORT;
 
 // const client = new pg.Client(DATABASE_URL);
 //gg
@@ -226,7 +227,7 @@ function notFoundHandler(req, res) {
 }
 
 client.connect().then(() => {
-  app.listen(5000, () => {
+  app.listen(process.env.PORT || 5000, () => {
     console.log("listen to 4000");
   });
 });
