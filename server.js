@@ -19,6 +19,7 @@ const DATABASE_URL = process.env.DATABASE_URL;
 console.log(APIKEY);
 
 // const client = new pg.Client(DATABASE_URL);
+//gg
 
 const client = new pg.Client({
   connectionString: process.env.DATABASE_URL,
@@ -225,7 +226,7 @@ function notFoundHandler(req, res) {
 }
 
 client.connect().then(() => {
-  app.listen(5000, () => {
+  app.listen(4500, () => {
     console.log("listen to 4000");
   });
 });
