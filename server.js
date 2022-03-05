@@ -2,11 +2,15 @@
 
 const express = require("express");
 
+const cors = require("cors");
+
 const data = require("./data.json");
 
 const dotenv = require("dotenv");
 
 const app = express();
+
+app.use(cors());
 
 const axios = require("axios");
 
