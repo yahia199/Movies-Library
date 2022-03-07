@@ -24,7 +24,7 @@ console.log(APIKEY);
 const PORT = process.env.PORT;
 
 // const client = new pg.Client(DATABASE_URL);
-//gg
+
 
 const client = new pg.Client({
   connectionString: process.env.DATABASE_URL,
