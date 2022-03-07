@@ -38,9 +38,9 @@ function needData(title, poster_path, overview) {
 }
 
 app.use(express.json());
-app.get("/", endPointHandler);
+app.get("/", hometHandler);
 app.get("/favorite", favoritePointHandler);
-app.get("/trending", trendingData);
+app.get("/trending", endPointHandler);
 app.get("/search", searchHandler);
 app.get("/collection", collectionHandler);
 app.get("/company", companyHandler);
@@ -59,6 +59,10 @@ app.use(errorHandler);
 //   //   console.log(data);
 // }
 function favoritePointHandler(req, res) {
+  return res.send("Welcome to Home Page");
+}
+
+function hometHandler(req, res) {
   return res.send("Welcome to Favorite Page");
 }
 
